@@ -1,0 +1,113 @@
+{% extends 'base.html'%}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body%}
+
+
+<div class="content">
+    <h1 class="display-5 fw-bold text-center">Signaali arvot</h1>
+    <table class="table table-striped table-hover">
+        <tr>
+            <th>rsrq</th>
+            <th>rsrp</th>
+            <th>sinr</th>
+            <th>Lisätty</th>
+            <th>Toiminnot</th>
+        </tr>
+        {% for tuote in tuotelista %}
+            <tr>
+                <th>{{ tuote.rsrq }}</th>
+                <th>{{ tuote.rsrp }}</th>
+                <th>{{ tuote.sinr }}</th>
+                <th>{{ tuote.date.date() }}</th>
+                <th>
+                    <a href="/poista/{{tuote.id}}">Poista</a>
+                </th>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <form action="/" method="POST">
+        <div class="row g-3 align-items-center">
+            <div class="col-auto">
+        <input type="text"  class="form-control" name="rsrq" placeholder="rsrq">
+    </div>
+    <div class="col-auto">
+        <input type="text"  class="form-control" name="rsrp" placeholder="rsrp">
+    </div>
+        <div class="col-auto">
+        <input type="text"  class="form-control" name="sinr" placeholder="sinr">
+    </div>
+    <div class="col-auto">
+        <input type="submit" class="btn btn-primary" value="Lisää">
+    </div>
+    </div>
+    </form>
+<div class="chart-c">
+    <canvas id="myChart" width="400" height="200"></canvas>
+    <script>
+   
+const ctx = document.getElementById('myChart').getContext('2d');
+var xValues = [{%for tuote in tuotelista %}
+"{{tuote.date}}",
+{% endfor %}
+];
+var rsrq = [{%for tuote in tuotelista %}
+{{tuote.rsrq}},
+{% endfor %}
+];
+
+var rsrp = [{%for tuote in tuotelista %}
+{{tuote.rsrp}},
+{% endfor %}
+];
+
+var sinr = [{%for tuote in tuotelista %}
+{{tuote.sinr}},
+{% endfor %}
+];
+
+var randomColorGenerator = function () { 
+    return '#' + (Math.random().toString(16) + '0000000').slice(2, 8); 
+};
+
+new Chart("myChart", {
+  type: "line",
+  data: {
+    labels: xValues,
+    datasets: [
+    {
+      label: "rsrq",
+
+      borderColor: randomColorGenerator(),
+      data: rsrq,
+    },
+    {
+      label: "rsrp",
+
+      borderColor: randomColorGenerator(),
+      data: rsrp,
+    },
+    {
+      label: "sinr",
+    
+      borderColor: randomColorGenerator(),
+      data: sinr,
+    }
+
+        ]//data
+  },
+ 
+});
+
+    </script>
+    </div>
+
+
+
+</div>
+
+{% endblock %}
